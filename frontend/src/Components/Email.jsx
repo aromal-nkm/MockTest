@@ -12,14 +12,14 @@ function Email({ onEmailSubmit }) {
     e.preventDefault();
     setErrorMessage('');
     try {
-      // Send email to backend to trigger OTP generation
+     
       const response = await axios.post('http://localhost:4000/user/sent-otp', { email });
       const data = response.data;
 
-      console.log(data); // Log response for debugging
+      console.log(data); 
 
       if (data.success) {
-        setOtpSent(true); // Set OTP sent state
+        setOtpSent(true); 
         onEmailSubmit(email);
       } else {
         setErrorMessage('Error sending OTP. Please try again.');
@@ -30,7 +30,7 @@ function Email({ onEmailSubmit }) {
     }
   };
 
-  // Handle OTP validation
+
   const handleOtpSubmit = async (e) => {
     e.preventDefault();
     setErrorMessage('');

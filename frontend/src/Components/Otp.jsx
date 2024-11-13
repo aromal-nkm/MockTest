@@ -11,7 +11,6 @@ function OTPForm({ email, onOTPVerify }) {
     e.preventDefault();
 
     try {
-      // Send OTP to backend for validation
       const response = await axios.post('http://localhost:4000/user/validate-otp', {
         otp
       });

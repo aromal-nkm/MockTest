@@ -54,7 +54,7 @@ function Email({ onEmailSubmit }) {
       <h2>Email Verification</h2>
       {!otpSent ? (
         <form onSubmit={handleEmailSubmit} style={{ display: 'flex', flexDirection: 'column' }}>
-          <label htmlFor="email" style={{ marginBottom: '10px' }}>Email</label>
+          <label htmlFor="email" style={{ marginBottom: '10px' }}></label>
           <input
             id="email"
             type="email"

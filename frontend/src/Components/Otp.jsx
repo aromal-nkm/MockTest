@@ -28,21 +28,63 @@ function OTPForm({ email, onOTPVerify }) {
     }
   };
 
+  const formStyle = {
+    width: '300px',
+    margin: '0 auto',
+    padding: '20px',
+    backgroundColor: '#f9f9f9',
+    borderRadius: '8px',
+    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+  };
+
+  const inputStyle = {
+    width: '100%',
+    padding: '10px',
+    margin: '10px 0',
+    borderRadius: '4px',
+    border: '1px solid #ccc',
+    fontSize: '16px',
+  };
+
+  const buttonStyle = {
+    width: '100%',
+    padding: '10px',
+    backgroundColor: '#4CAF50',
+    color: 'white',
+    fontSize: '16px',
+    border: 'none',
+    borderRadius: '4px',
+    cursor: 'pointer',
+  };
+
+  const buttonHoverStyle = {
+    backgroundColor: '#45a049',
+  };
+
+  const errorMessageStyle = {
+    color: 'red',
+    marginTop: '10px',
+    textAlign: 'center',
+  };
+
   return (
-    <div>
-      <h2>Enter OTP</h2>
-      <form onSubmit={handleSubmit}>
-        <label>OTP</label>
+    <div style={{ padding: '50px 20px', textAlign: 'center' }}>
+      <h2 style={{ marginBottom: '20px' }}>Enter OTP</h2>
+      <form onSubmit={handleSubmit} style={formStyle}>
+        <label style={{ fontSize: '16px', fontWeight: 'bold', marginBottom: '10px' }}>OTP</label>
         <input
           type="text"
           value={otp}
           onChange={(e) => setOtp(e.target.value)}
           required
           maxLength="4"
+          style={inputStyle}
         />
-        <button type="submit">Verify OTP</button>
+        <button type="submit" style={buttonStyle} onMouseEnter={(e) => e.target.style.backgroundColor = buttonHoverStyle.backgroundColor} onMouseLeave={(e) => e.target.style.backgroundColor = buttonStyle.backgroundColor}>
+          Verify OTP
+        </button>
       </form>
-      {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
+      {errorMessage && <p style={errorMessageStyle}>{errorMessage}</p>}
     </div>
   );
 }

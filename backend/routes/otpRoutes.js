@@ -1,47 +1,50 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const OTP = require("../models/Otp");
-const nodemailer = require("nodemailer");
+const user = require('../models/Otp');
+const nodemailer = require('nodemailer');
+require('dotenv').config();
 
-// Send OTP Route
-router.post("/send-otp", async (req, res) => {
-  const { email } = req.body;
-
-  console.log("Request received to send OTP to:", email);
-
-  try {
-    // Generate a 6-digit random OTP
-    const otp = Math.floor(100000 + Math.random() * 900000).toString();
-
-    // Save OTP to database
-    await OTP.create({ email, otp });
-
-    // Configure Nodemailer transporter
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: process.env.EMAIL_USER, // Use environment variables for security
-        pass: process.env.EMAIL_PASS,
-      },
+const transporter = nodemailer.createTransport({
+    service: 'Gmail',
+    auth: { 
+        user: process.env.Email_User, 
+        pass: process.env.Email_Passkey }
+  });
+router.post('/sent-otp',async (req,res)=>{
+    const {email} =req.body;
+    const otp=Math.floor(1000+Math.random()*9000);
+    const mailOptions = {
+        from: process.env.Email_User,
+        to: email,
+        subject: 'Your OTP Code',
+        text: `Your OTP is ${otp}`,
+      };
+      try {
+        await transporter.sendMail(mailOptions);
+        // Save OTP to database
+        await user.create({ email, otp });
+        res.json({ success: true });
+      } catch (error) {
+        res.status(500).json({ success: false, message: 'Failed to send OTP' });
+      }
     });
 
-    // Email options
-    const mailOptions = {
-      from: process.env.EMAIL_USER, // Sender address
-      to: email, // Recipient's email
-      subject: "Your OTP Code",
-      text: `Dear User,\n\nYour OTP code is: ${otp}\n\nThis code is valid for 10 minutes.\n\nBest regards,\nYour App Team`,
-    };
+    router.post('/validate-otp', async (req, res) => {
+        const { otp } = req.body;
+        console.log(otp);
+        const record = await user.findOne({ otp });
+        console.log(record);
+        if (!record) {
+          return res.json({ valid: false, message: 'Invalid OTP. Please try again.' });
+        }
+      
+        // If OTP is valid, return success
+        return res.json({ valid: true });
+      });
+      
 
-    // Send the email
-    await transporter.sendMail(mailOptions);
 
-    res.status(200).json({ message: "OTP sent successfully" });
-  } catch (error) {
-    console.error("Error sending OTP:", error);
-    res.status(500).json({ message: "Error sending OTP", error: error.message });
-  }
-});
+module.exports=router;
+    
 
-module.exports = router;
-
+    

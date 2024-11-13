@@ -1,142 +1,87 @@
-import React, { useState } from "react";
-import axios from "axios";
+import React, { useState } from 'react';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const Otp = () => {
-  const [step, setStep] = useState(1); 
-  const [email, setEmail] = useState("");
-  const [otp, setOtp] = useState("");
+  const [step, setStep] = useState(1); // Step 1: Email form, Step 2: OTP form
+  const [email, setEmail] = useState('');
+  const [otp, setOtp] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+  const navigate = useNavigate();
 
-  
+  // Handle email submission
   const handleEmailSubmit = async (e) => {
     e.preventDefault();
+    setErrorMessage('');
     try {
-      const response = await axios.post("http://localhost:5000/api/send-otp", { email });
+      const response = await axios.post('http://localhost:5000/api/send-otp', { email });
       if (response.status === 200) {
-        alert("OTP sent to your email!");
-        setStep(2);
+        alert('OTP sent to your email!');
+        setStep(2); // Move to OTP entry step
       }
     } catch (error) {
-      alert("Error sending OTP. Please try again.");
+      setErrorMessage('Error sending OTP. Please try again.');
+      console.error(error);
     }
   };
 
- 
+  // Handle OTP submission
   const handleOtpSubmit = async (e) => {
     e.preventDefault();
+    setErrorMessage('');
     try {
-      const response = await axios.post("http://localhost:5000/verify-otp", { email, otp });
-      if (response.data.success) {
-        alert("OTP verified! Redirecting to Welcome page...");
-        setStep(3); 
+      const response = await axios.post('http://localhost:5000/api/verify-otp', { email, otp });
+      if (response.data.message === 'Login successful') {
+        navigate('/home'); // Redirect to home page after successful OTP verification
       } else {
-        alert("Invalid OTP. Please try again.");
+        setErrorMessage('Invalid OTP. Please try again.');
       }
     } catch (error) {
-      alert("Error verifying OTP. Please try again.");
+      setErrorMessage('Error verifying OTP. Please try again.');
+      console.error(error);
     }
   };
 
   return (
-    <div
-      style={{
-        maxWidth: "400px",
-        margin: "auto",
-        padding: "20px",
-        textAlign: "center",
-        fontFamily: "Arial, sans-serif",
-        background: "linear-gradient(to bottom, #6a11cb, #2575fc)",
-        borderRadius: "10px",
-        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
-        color: "white",
-      }}
-    >
-      
+    <div style={{ maxWidth: '400px', margin: 'auto', padding: '20px', textAlign: 'center' }}>
+      {step === 1 && (
         <form onSubmit={handleEmailSubmit}>
-          <h2 style={{ marginBottom: "20px" }}>Email Verification</h2>
-          <label style={{ fontSize: "14px", fontWeight: "bold" }}>Email:</label>
+          <h2>Email Verification</h2>
+          <label>Email:</label>
           <br />
           <input
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            style={{
-              width: "100%",
-              padding: "12px",
-              margin: "10px 0",
-              borderRadius: "5px",
-              border: "none",
-              outline: "none",
-            }}
+            style={{ width: '100%', padding: '10px', margin: '10px 0' }}
           />
-          <button
-            type="submit"
-            style={{
-              padding: "12px 20px",
-              cursor: "pointer",
-              backgroundColor: "#ff914d",
-              border: "none",
-              borderRadius: "5px",
-              color: "white",
-              fontWeight: "bold",
-              transition: "all 0.3s ease",
-            }}
-            onMouseOver={(e) => (e.target.style.backgroundColor = "#ff5722")}
-            onMouseOut={(e) => (e.target.style.backgroundColor = "#ff914d")}
-          >
+          <button type="submit" style={{ padding: '10px 20px', cursor: 'pointer' }}>
             Send OTP
           </button>
+          {errorMessage && <p style={{ color: 'red', marginTop: '10px' }}>{errorMessage}</p>}
         </form>
-     
+      )}
 
-     
+      {step === 2 && (
         <form onSubmit={handleOtpSubmit}>
-          <h2 style={{ marginBottom: "20px" }}>Enter OTP</h2>
-          <label style={{ fontSize: "14px", fontWeight: "bold" }}>OTP:</label>
+          <h2>Enter OTP</h2>
+          <label>OTP:</label>
           <br />
           <input
             type="text"
             value={otp}
             onChange={(e) => setOtp(e.target.value)}
             required
-            style={{
-              width: "100%",
-              padding: "12px",
-              margin: "10px 0",
-              borderRadius: "5px",
-              border: "none",
-              outline: "none",
-            }}
+            maxLength="6"
+            style={{ width: '100%', padding: '10px', margin: '10px 0' }}
           />
-          <button
-            type="submit"
-            style={{
-              padding: "12px 20px",
-              cursor: "pointer",
-              backgroundColor: "#4caf50",
-              border: "none",
-              borderRadius: "5px",
-              color: "white",
-              fontWeight: "bold",
-              transition: "all 0.3s ease",
-            }}
-            onMouseOver={(e) => (e.target.style.backgroundColor = "#388e3c")}
-            onMouseOut={(e) => (e.target.style.backgroundColor = "#4caf50")}
-          >
+          <button type="submit" style={{ padding: '10px 20px', cursor: 'pointer' }}>
             Verify OTP
           </button>
+          {errorMessage && <p style={{ color: 'red', marginTop: '10px' }}>{errorMessage}</p>}
         </form>
-      
-
-      
-        <div>
-          <h2 style={{ marginBottom: "10px" }}>🎉 Welcome! 🎉</h2>
-          <p style={{ fontSize: "16px", fontWeight: "bold" }}>
-            You have successfully verified your email.
-          </p>
-          <p style={{ fontSize: "14px" }}>Thank you for using our service!</p>
-        </div>
-      
+      )}
     </div>
   );
 };

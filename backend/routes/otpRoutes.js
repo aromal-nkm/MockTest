@@ -21,7 +21,7 @@ router.post('/sent-otp',async (req,res)=>{
       };
       try {
         await transporter.sendMail(mailOptions);
-        // Save OTP to database
+  
         await user.create({ email, otp });
         res.json({ success: true });
       } catch (error) {
@@ -38,7 +38,7 @@ router.post('/sent-otp',async (req,res)=>{
           return res.json({ valid: false, message: 'Invalid OTP. Please try again.' });
         }
       
-        // If OTP is valid, return success
+      
         return res.json({ valid: true });
       });
       

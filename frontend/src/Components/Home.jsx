@@ -12,7 +12,7 @@ export const Home = () => {
 
   return (
     <div style={{ padding: '20px' }}>
-      <h1 style={welcomeStyle}>Welcome to Our Website!</h1>
+      <h1 style={welcomeStyle}>Welcome to Mock Test!</h1>
     </div>
   )
 }

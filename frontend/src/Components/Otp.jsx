@@ -2,11 +2,11 @@ import React, { useState } from "react";
 import axios from "axios";
 
 const Otp = () => {
-  const [step, setStep] = useState(1); // Step 1: Email form, Step 2: OTP form
+  const [step, setStep] = useState(1); 
   const [email, setEmail] = useState("");
   const [otp, setOtp] = useState("");
 
-  // Handle email submission
+  
   const handleEmailSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -20,14 +20,14 @@ const Otp = () => {
     }
   };
 
-  // Handle OTP submission
+ 
   const handleOtpSubmit = async (e) => {
     e.preventDefault();
     try {
       const response = await axios.post("http://localhost:5000/verify-otp", { email, otp });
       if (response.data.success) {
         alert("OTP verified! Redirecting to Welcome page...");
-        setStep(3); // Assuming step 3 is the welcome page
+        setStep(3); 
       } else {
         alert("Invalid OTP. Please try again.");
       }
@@ -50,7 +50,7 @@ const Otp = () => {
         color: "white",
       }}
     >
-      {step === 1 && (
+      
         <form onSubmit={handleEmailSubmit}>
           <h2 style={{ marginBottom: "20px" }}>Email Verification</h2>
           <label style={{ fontSize: "14px", fontWeight: "bold" }}>Email:</label>
@@ -87,9 +87,9 @@ const Otp = () => {
             Send OTP
           </button>
         </form>
-      )}
+     
 
-      {step === 2 && (
+     
         <form onSubmit={handleOtpSubmit}>
           <h2 style={{ marginBottom: "20px" }}>Enter OTP</h2>
           <label style={{ fontSize: "14px", fontWeight: "bold" }}>OTP:</label>
@@ -126,9 +126,9 @@ const Otp = () => {
             Verify OTP
           </button>
         </form>
-      )}
+      
 
-      {step === 3 && (
+      
         <div>
           <h2 style={{ marginBottom: "10px" }}>🎉 Welcome! 🎉</h2>
           <p style={{ fontSize: "16px", fontWeight: "bold" }}>
@@ -136,7 +136,7 @@ const Otp = () => {
           </p>
           <p style={{ fontSize: "14px" }}>Thank you for using our service!</p>
         </div>
-      )}
+      
     </div>
   );
 };
